@@ -2,7 +2,7 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-import "interfaces/IERCValidatable.sol";
+import "../interfaces/IERCValidatable.sol";
 
 // PaymentContract main contract for a safe payment platform.
 // A safe payment must be validated by a third party.

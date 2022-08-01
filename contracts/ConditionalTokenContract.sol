@@ -2,7 +2,7 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-import "interfaces/IERCConditionalToken.sol";
+import "../interfaces/IERCConditionalToken.sol";
 
 contract ConditionalToken is IERCConditional {
     // Token data
