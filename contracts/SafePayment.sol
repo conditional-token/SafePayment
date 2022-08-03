@@ -33,8 +33,8 @@ contract SafePayment is ValidableEvent {
     }
 
     // Mapping from paymentID to transaction.
-    mapping(uint256 => Payment) public _payments;
-    uint256 _nextPaymentID = 1;
+    mapping(uint256 => Payment) public payments;
+    uint256 nextPaymentID = 1;
 
     // Contract ethereum balance
     uint256 private contractBalance;
@@ -55,10 +55,10 @@ contract SafePayment is ValidableEvent {
         require(paymentValue + validationFee == msg.value, "Value must be equal paymentValue and validationFee");
         contractBalance += msg.value;
         
-        uint256 paymentID = _nextPaymentID;
-        _nextPaymentID++;
+        uint256 paymentID = nextPaymentID;
+        nextPaymentID++;
 
-        Payment storage p = _payments[paymentID];
+        Payment storage p = payments[paymentID];
         p.id = paymentID;
         p.issuer = msg.sender;
         p.paymentValue = paymentValue;
@@ -77,20 +77,32 @@ contract SafePayment is ValidableEvent {
         return paymentID;
     }
 
+     // Event emmited when a transfer is made.
+    event EthTransfer(
+        address  to,
+        uint256  ammount
+    );
+
     function _transfer(address payable _to, uint256 _ammount) internal {
         _to.transfer(_ammount);
+        emit EthTransfer(_to, _ammount);
     }
 
     /// @notice claimPayment allows the payment target to withdraw the value from the contract after the payment was validated.
+    /// It also allows issuer to retrieve the money is payment was not approved.
     /// @param eventID is the payment ID.
     function claimPayment(uint256 eventID) external {
-        Payment storage p = _payments[eventID];
+        Payment storage p = payments[eventID];
         require(p.id != 0, "payment id doesn't exist.");
-        require(p.isApproved, "payment should have been approved to be claimed.");
+        require(p.isValidated, "payment wasn't validated.");
+        if (p.isApproved) {
+            require(p.receiver == msg.sender,"msg.sender is not the receiver of the payment.");
+        } else {
+            require(p.issuer == msg.sender, "msg.sender is not the issuer of this payment.");
+        }
         require(!p.isPaid, "payment was already made.");
-        require(p.receiver == msg.sender, "sender is not the receiver of the payment.");
 
-        _transfer(payable(p.receiver), p.paymentValue);
+        _transfer(payable(msg.sender), p.paymentValue);
         p.isPaid = true;
     }
 
@@ -101,7 +113,7 @@ contract SafePayment is ValidableEvent {
     /// @return isApproved bool representing if event was approved.
     /// @return isFinal bool representing if event was validated and isApproved is a final approval status.
     function getEventStatus(uint256 eventID) external view override returns(bool isApproved, bool isFinal){
-        Payment storage p = _payments[eventID];
+        Payment storage p = payments[eventID];
         require(p.id != 0, "payment id doesn't exist");
         return (p.isApproved, p.isValidated);
     }
@@ -112,7 +124,7 @@ contract SafePayment is ValidableEvent {
     /// @return approvalRate uint256 representing the rate of approval.
     /// @return rejectRate uint256 representing the rate of rejection.
     function getEventRates(uint256 eventID) external view override returns(uint256 approvalRate, uint256 rejectRate) {
-        Payment storage p = _payments[eventID];
+        Payment storage p = payments[eventID];
         require(p.id != 0, "payment id doesn't exist");
         if (p.isValidated && p.isApproved) {
             return (1, 0);
@@ -124,7 +136,7 @@ contract SafePayment is ValidableEvent {
     /// @param eventID Identifier of the event.
     /// @return address of validator.
     function getEventValidators(uint256 eventID) external view override returns(address[] memory){ 
-        Payment storage p = _payments[eventID];
+        Payment storage p = payments[eventID];
         require(p.id != 0, "payment id doesn't exist");
         return p.validators;
     }
@@ -134,7 +146,7 @@ contract SafePayment is ValidableEvent {
     /// @param validator Address of the possible validator.
     /// @return bool representing if validator can approve or reject the event with eventID.
     function isEventValidator(uint256 eventID, address validator) external view override returns(bool){ 
-        Payment storage p = _payments[eventID];
+        Payment storage p = payments[eventID];
         require(p.id != 0, "payment id doesn't exist");
         return p.isValidator[validator];
     }
@@ -145,7 +157,7 @@ contract SafePayment is ValidableEvent {
     /// @param eventID Identifier of the event.
     /// @param rejectRate A rate that can be used by contracts to measure approval when needed.
     function rejectEvent(uint256 eventID, uint256 rejectRate) external override {
-        Payment storage p = _payments[eventID];
+        Payment storage p = payments[eventID];
         require(p.id != 0, "payment id doesn't exist");
         require(!p.isValidated, "payment was already validated");
         require(p.isValidator[msg.sender], "msg.sender is not a valid validator for the payment");
@@ -160,7 +172,7 @@ contract SafePayment is ValidableEvent {
     /// @param eventID Identifier of the event.
     /// @param approvalRate A rate that can be used by contracts to measure approval when needed.
     function approveEvent(uint256 eventID, uint256 approvalRate) external override {
-        Payment storage p = _payments[eventID];
+        Payment storage p = payments[eventID];
         require(p.id != 0, "payment id doesn't exist");
         require(!p.isValidated, "payment was already validated");
         require(p.isValidator[msg.sender], "msg.sender is not a valid validator for the payment");
@@ -175,7 +187,7 @@ contract SafePayment is ValidableEvent {
     /// @param eventID Identifier of the event.
     /// @return address of the issuer.
     function issuerOf(uint256 eventID) external view returns (address) {
-        Payment storage p = _payments[eventID];
+        Payment storage p = payments[eventID];
         require(p.id != 0, "payment id doesn't exist");
         return p.issuer;
     }
