@@ -1,4 +1,4 @@
-var Payments = artifacts.require("PaymentContract");
+var Payments = artifacts.require("SafePayment");
 
 module.exports = function(deployer) {
   deployer.deploy(Payments);

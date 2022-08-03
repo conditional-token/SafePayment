@@ -1,4 +1,4 @@
-const Payments = artifacts.require("PaymentContract");
+const Payments = artifacts.require("SafePayment");
 
 const { toBN } = web3.utils;
 
@@ -8,7 +8,7 @@ const toWei = (ammount, unit="ether") => {
     return web3.utils.toWei("" + ammount, unit);
 }
 
-contract("PaymentContract", (accounts) => {
+contract("SafePayment", (accounts) => {
     before(async () => {
         payments = await Payments.deployed();
     });
@@ -47,10 +47,12 @@ contract("PaymentContract", (accounts) => {
             );
         });
 
-        it("should have created the ConditionCreated event", async () => {
-            expectEvent.inLogs(createResponse.logs, "ConditionCreated", {
-                conditionID: new BN(1),
-                issuer: from.address
+        it("should have created the EventCreated event", async () => {
+            expectEvent.inLogs(createResponse.logs, "EventCreated", {
+                eventID: new BN(1),
+                issuer: from.address,
+                parties: [to.address],
+                validators: [validator.address],
               });
         });
 
@@ -90,9 +92,11 @@ contract("PaymentContract", (accounts) => {
                 }
             );
 
-            expectEvent.inLogs(createResponse.logs, "ConditionCreated", {
-                conditionID: new BN(2),
-                issuer: from.address
+            expectEvent.inLogs(createResponse.logs, "EventCreated", {
+                eventID: new BN(2),
+                issuer: from.address,
+                parties: [to.address],
+                validators: [validator.address],
               });
         });
   });
