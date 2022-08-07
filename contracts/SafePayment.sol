@@ -87,7 +87,7 @@ contract SafePayment is ValidableEvent {
 
     /// @notice is the getter for all ids of payments where address passed is a validator
     /// @param validator address of the validator.
-    function getValidatorIndexOf(address validator) external view returns(uint256[] memory paymentIDs ) {
+    function getValidatorIndex(address validator) external view returns(uint256[] memory paymentIDs ) {
         return validatorIndex[validator];
     }
 
