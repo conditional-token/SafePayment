@@ -40,12 +40,16 @@ contract SafePayment is ValidableEvent {
     uint256 private contractBalance;
 
     // Indexes
-    mapping(address => uint256[]) public issuerIndex;
-    mapping(address => uint256[]) public validatorIndex;
-    mapping(address => uint256[]) public receiverIndex;
+    mapping(address => uint256[]) private issuerIndex;
+    mapping(address => uint256[]) private validatorIndex;
+    mapping(address => uint256[]) private receiverIndex;
 
 
     /// @notice is the payment event constructor.
+    /// @param paymentValue is the value that must be paid to payable to. It must be sent in the tx value.
+    /// @param validationFee is the fee for the validator. It must be sent in the tx value.
+    /// @param payableTo the address that this payment is addressed to.
+    /// @param validators an array of addresses that can validate this payment.
     function createPayment(
         uint256 paymentValue,
         uint256 validationFee,
@@ -68,13 +72,35 @@ contract SafePayment is ValidableEvent {
         p.validators = validators;
         for(uint256 i=0; i < validators.length; i++) {
             p.isValidator[validators[i]] = true;
+            // validator index
+            validatorIndex[validators[i]].push(paymentID);
         }
+        issuerIndex[msg.sender].push(paymentID);
+        receiverIndex[payableTo].push(paymentID);
 
         address[] memory parties = new address[](1);
         parties[0] = payableTo;
         emit EventCreated(paymentID, msg.sender, parties, validators);
 
         return paymentID;
+    }
+
+    /// @notice is the getter for all ids of payments where address passed is a validator
+    /// @param validator address of the validator.
+    function getValidatorIndexOf(address validator) external view returns(uint256[] memory paymentIDs ) {
+        return validatorIndex[validator];
+    }
+
+    /// @notice is the getter for all ids of payments where address passed is an issuer
+    /// @param issuer address of the issuer.
+    function getIssuerIndex(address issuer) external view returns(uint256[] memory paymentIDs ) {
+        return issuerIndex[issuer];
+    }
+
+    /// @notice is the getter for all ids of payments where address passed is a receiver
+    /// @param receiver address of the receiver.
+    function getReceiverIndex(address receiver) external view returns(uint256[] memory paymentIDs ) {
+        return receiverIndex[receiver];
     }
 
      // Event emmited when a transfer is made.
@@ -186,7 +212,7 @@ contract SafePayment is ValidableEvent {
     /// @notice should return the issuer of the event.
     /// @param eventID Identifier of the event.
     /// @return address of the issuer.
-    function issuerOf(uint256 eventID) external view returns (address) {
+    function issuerOf(uint256 eventID) external view override returns (address) {
         Payment storage p = payments[eventID];
         require(p.id != 0, "payment id doesn't exist");
         return p.issuer;
