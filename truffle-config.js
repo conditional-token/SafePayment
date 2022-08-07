@@ -1,3 +1,8 @@
+var HDWalletProvider = require("truffle-hdwallet-provider")
+
+TESTNET_MNEMONIC_LOCAL = 'minimum symptom minute gloom tragic situate silver mechanic salad amused elite beef'
+ROPSTEIN_API_KEY = process.env.ROPSTEIN_API_KEY
+
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
   // for more about customizing your Truffle configuration!
@@ -12,8 +17,13 @@ module.exports = {
       port: 8545,
       network_id: "*" // Match any network id
     },
-    develop: {
-      port: 8545
-    }
+    ropsten: {
+      provider: function() {
+        return new HDWalletProvider(TESTNET_MNEMONIC_LOCAL, "https://ropsten.infura.io/" + ROPSTEIN_API_KEY)
+      },
+      network_id: 3,
+      networkCheckTimeout: 999999,
+      gas: 4000000      //make sure this gas allocation isn't over 4M, which is the max
+    },
   }
 };
