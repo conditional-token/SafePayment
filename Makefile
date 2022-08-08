@@ -1,5 +1,6 @@
 setup:
 	@npm install -g truffle
+	@npm i
 
 compile:
 	@truffle compile
@@ -9,7 +10,7 @@ deploy:
 	@truffle deploy
 
 deploy-testnet:
-	@truffle deploy --network ropsten
+	@truffle deploy --verbose-rpc --reset --network ropsten
 
 tests:
 	@docker-compose up -d
