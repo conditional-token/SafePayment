@@ -1,3 +1,6 @@
+include .env
+export
+
 setup:
 	@npm install -g truffle
 	@npm i

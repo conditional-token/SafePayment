@@ -1,3 +1,4 @@
 ganache_data/
 build/
 node_modules/
+.env

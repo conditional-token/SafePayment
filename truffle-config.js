@@ -18,7 +18,7 @@ module.exports = {
     },
     ropsten: {
       provider: function() {
-        return new HDWalletProvider(TESTNET_MNEMONIC_LOCAL, "https://ropsten.infura.io/v3/" + ROPSTEIN_API_KEY)
+        return new HDWalletProvider(TESTNET_MNEMONIC_LOCAL, "https://ropsten.infura.io/v3/" + process.env.ROPSTEN_API_KEY)
       },
       network_id: "*",
       networkCheckTimeout: 10000,
