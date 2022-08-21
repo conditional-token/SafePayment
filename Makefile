@@ -15,6 +15,9 @@ deploy:
 deploy-testnet:
 	@truffle deploy --verbose-rpc --reset --network ropsten
 
+verify-testnet:
+	@truffle run verify SafePayment --network ropsten
+
 tests:
 	@docker-compose up -d
 	@truffle test
