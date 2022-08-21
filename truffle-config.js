@@ -1,7 +1,6 @@
 var HDWalletProvider = require("truffle-hdwallet-provider")
 
 TESTNET_MNEMONIC_LOCAL = 'minimum symptom minute gloom tragic situate silver mechanic salad amused elite beef'
-ROPSTEIN_API_KEY = "ace3c437c0c543cda5a0f1a050f161d7"
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
