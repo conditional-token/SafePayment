@@ -85,7 +85,7 @@ contract("SafePayment", (accounts) => {
             assert.equal(p.isValidated || p.isApproved || p.isPaid, false);
             assert.equal(p.paymentValue.toString(), toBN(toWei(1)).toString());
             assert.equal(p.validationFee.toString(), toBN(toWei(0.01)).toString());
-            assert.equal(p.payableTo, to.address);
+            assert.equal(p.receiver, to.address);
             assert.equal(p.issuer, from.address);
         });
 

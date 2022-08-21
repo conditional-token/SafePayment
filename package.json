@@ -2,5 +2,28 @@
   "dependencies": {
     "@openzeppelin/test-helpers": "^0.5.15",
     "truffle-hdwallet-provider": "^1.0.17"
-  }
+  },
+  "name": "safe-payments",
+  "version": "1.0.0",
+  "description": "A smart contract implementation of a third party validable payment.",
+  "directories": {
+    "test": "test"
+  },
+  "engines": {
+    "node": ">16",
+    "npm": ">8"
+  },
+  "scripts": {
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conditional-token/conditional-token.git"
+  },
+  "author": "Marcos Barros de Medeiros Filho",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/conditional-token/conditional-token/issues"
+  },
+  "homepage": "https://github.com/conditional-token/conditional-token#readme"
 }
