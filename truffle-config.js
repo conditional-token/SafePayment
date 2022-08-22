@@ -1,7 +1,6 @@
 var HDWalletProvider = require("truffle-hdwallet-provider")
 
 TESTNET_MNEMONIC_LOCAL = 'minimum symptom minute gloom tragic situate silver mechanic salad amused elite beef'
-ROPSTEIN_API_KEY = "ace3c437c0c543cda5a0f1a050f161d7"
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -11,6 +10,10 @@ module.exports = {
       version: "pragma"
       }
     },
+  plugins: ['truffle-plugin-verify'],
+  api_keys: {
+    etherscan: process.env.ETHERSCAN_API_KEY
+  },
   networks: {
     development: {
       host: "localhost",
@@ -19,7 +22,7 @@ module.exports = {
     },
     ropsten: {
       provider: function() {
-        return new HDWalletProvider(TESTNET_MNEMONIC_LOCAL, "https://ropsten.infura.io/v3/" + ROPSTEIN_API_KEY)
+        return new HDWalletProvider(TESTNET_MNEMONIC_LOCAL, "https://ropsten.infura.io/v3/" + process.env.ROPSTEN_API_KEY)
       },
       network_id: "*",
       networkCheckTimeout: 10000,
