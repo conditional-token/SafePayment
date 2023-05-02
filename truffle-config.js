@@ -1,6 +1,6 @@
 var HDWalletProvider = require("truffle-hdwallet-provider")
 
-TESTNET_MNEMONIC_LOCAL = 'minimum symptom minute gloom tragic situate silver mechanic salad amused elite beef'
+TESTNET_MNEMONIC_LOCAL = 'crouch clever swing decide woman glide picnic ostrich fatigue depart despair success'//'minimum symptom minute gloom tragic situate silver mechanic salad amused elite beef'
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -12,7 +12,7 @@ module.exports = {
     },
   plugins: ['truffle-plugin-verify'],
   api_keys: {
-    etherscan: process.env.ETHERSCAN_API_KEY
+    etherscan: "6XQ2RV4KFJMIQJBNQ22BUIC3H1SUTK5Z9N"//"CIHQZ97VBFXRR1Z1Q2HUMNSHM9HDA28QUW"
   },
   networks: {
     development: {
@@ -20,13 +20,14 @@ module.exports = {
       port: 8545,
       network_id: "*" // Match any network id
     },
-    ropsten: {
+    sepolia: {
+      pollingInterval: 30000,
+      networkCheckTimeout: 100000,
       provider: function() {
-        return new HDWalletProvider(TESTNET_MNEMONIC_LOCAL, "https://ropsten.infura.io/v3/" + process.env.ROPSTEN_API_KEY)
+        return new HDWalletProvider(TESTNET_MNEMONIC_LOCAL, "https://sepolia.infura.io/v3/392267faef4f427ebba0b50d231385e4" )
       },
-      network_id: "*",
-      networkCheckTimeout: 10000,
-      gas: 4000000      //make sure this gas allocation isn't over 4M, which is the max
+      network_id: "11155111",//"*"
+      gas: 4465030      //make sure this gas allocation isn't over 4M, which is the max
     },
   }
 };

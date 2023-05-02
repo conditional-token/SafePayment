@@ -13,10 +13,10 @@ deploy:
 	@truffle deploy
 
 deploy-testnet:
-	@truffle deploy --verbose-rpc --reset --network ropsten
+	@truffle deploy --verbose-rpc --reset --network sepolia
 
 verify-testnet:
-	@truffle run verify SafePayment --network ropsten
+	@truffle run verify SafePayment --network sepolia
 
 tests:
 	@docker-compose up -d

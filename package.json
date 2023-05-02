@@ -1,8 +1,8 @@
 {
   "dependencies": {
     "@openzeppelin/test-helpers": "^0.5.15",
-    "truffle-hdwallet-provider": "^1.0.17",
-    "truffle-plugin-verify": "^0.5.28"
+    "@truffle/hdwallet-provider": "^2.1.9",
+    "truffle-hdwallet-provider": "^1.0.17"
   },
   "name": "safe-payments",
   "version": "1.0.0",
@@ -26,5 +26,8 @@
   "bugs": {
     "url": "https://github.com/conditional-token/conditional-token/issues"
   },
-  "homepage": "https://github.com/conditional-token/conditional-token#readme"
+  "homepage": "https://github.com/conditional-token/conditional-token#readme",
+  "devDependencies": {
+    "truffle-plugin-verify": "^0.6.2"
+  }
 }
